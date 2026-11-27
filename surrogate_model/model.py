@@ -25,7 +25,7 @@ def make_gpr():
 
 #create RF model, GPR is very slow
 #add this to config later, gonna have to reorgianize. just hardcoded for now
-def make_model():
+def make_rf():
     return RandomForestRegressor(
         #tells the model how many trees to use, more trees = better performance but slower
         n_estimators = 100,

@@ -14,7 +14,7 @@ import pandas as pd
 from .predict import predict_salinity
 
 #predicts salinity at these coords.
-new_points = pd.DataFrame({"x": [0], "z": [-10]})
+new_points = pd.DataFrame({"x": [0], "z": [-10], "land_surface_elevation": [0]})
 #outputs preds.
 predictions = predict_salinity(model, new_points)
 print(predictions)

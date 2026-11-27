@@ -6,6 +6,6 @@ from .data import load_data
 
 def preprocess_data():
     data = load_data()
-    X = data[["x", "z"]]
+    X = data[["x", "z", "land_surface_elevation"]]
     y = data["salinity"]
     return X, y
