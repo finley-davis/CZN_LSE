@@ -1,6 +1,11 @@
-"""
-Make predictions for new inputs, this is how i'm going to understand the mechanisms behind microtopgraphy salinity differences
-"""
+"""Predict a salt-front position from a new LSE profile."""
 
-def predict_salinity(model, new_points):
-    return model.predict(new_points[["x", "z", "land_surface_elevation"]])
+from .preprocessing import profile_to_features
+
+
+def predict_salt_front(model, lse_profile):
+    features = profile_to_features(lse_profile)
+    expected_columns = list(model.feature_names_in_)
+    if list(features.columns) != expected_columns:
+        raise ValueError("LSE profile must use the same x coordinates as the training data")
+    return float(model.predict(features)[0])

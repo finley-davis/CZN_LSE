@@ -1,13 +1,30 @@
 
-To run: python3 -m surrogate_model.train; This takes forever...
+This model predicts one salt-front x position per simulation from the simulation's
+land-surface-elevation (LSE) profile.
 
-I call it like this because I am using relative import, so I run it as a module from the repo root, rather than as a file. 
+Run from the repository root:
 
-Prediction:
-I've added lse and time data to the fields csvs. Now I need to train the model on this, so that 
-salinity can be predicted based on this. 
+```sh
+python3 -m surrogate_model.train
+```
 
-I'm going to do this in multiple ways.
-    1 - get max value from salt front (salinity and x-value)
-    2 - get total salinity from sim.
-    3 - mean salinity from sim.
+Each case CSV contributes one training example. The 13 vertical mesh rows at each
+x are collapsed to one LSE value; the salt-front target is the inland 17.5 PSU
+crossing, found from the maximum salinity in each vertical column and linearly
+interpolated between x coordinates. The script reports leave-one-case-out
+metrics before fitting the model on all cases. To use the fitted estimator in
+Python:
+
+```python
+import pandas as pd
+
+from surrogate_model.predict import predict_salt_front
+from surrogate_model.train import train_model
+
+model = train_model()
+profile = pd.read_csv("new_lse_profile.csv")
+front_x = predict_salt_front(model, profile)
+```
+
+The profile must contain `x` and `land_surface_elevation` columns on the same
+x grid as the training cases.

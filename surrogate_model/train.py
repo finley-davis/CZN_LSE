@@ -1,20 +1,21 @@
-"""
-loading, splitting, fitting. Making a pipeline
-"""
+"""Train and evaluate the salt-front model."""
 
-from .model import make_gpr
+from .evaluate import evaluate_model
+from .model import make_model
 from .preprocessing import preprocess_data
 
-X, y = preprocess_data()
-model = make_gpr()
-model.fit(X, y)
 
-#run dis
-import pandas as pd
-from .predict import predict_salinity
+def train_model():
+    X, y = preprocess_data()
+    mae, mse, r2 = evaluate_model(make_model(), X, y)
+    model = make_model().fit(X, y)
 
-#predicts salinity at these coords.
-new_points = pd.DataFrame({"x": [0], "z": [-10], "land_surface_elevation": [0]})
-#outputs preds.
-predictions = predict_salinity(model, new_points)
-print(predictions)
+    print(f"Training cases: {len(X)}")
+    print(f"Leave-one-case-out MAE: {mae:.3f} m")
+    print(f"Leave-one-case-out MSE: {mse:.3f} m^2")
+    print(f"Leave-one-case-out R^2: {r2:.3f}")
+    return model
+
+
+if __name__ == "__main__":
+    train_model()
